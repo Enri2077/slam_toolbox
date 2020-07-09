@@ -2620,6 +2620,8 @@ namespace karto
 
   kt_bool Mapper::Process(LocalizedRangeScan* pScan)
   {
+	  std::cout << "Process" << std::endl;
+
 	  if (pScan != NULL)
 	  {
 		  karto::LaserRangeFinder* pLaserRangeFinder = pScan->GetLaserRangeFinder();
@@ -2669,8 +2671,8 @@ namespace karto
 		  // add scan to buffer and assign id
 		  m_pMapperSensorManager->AddScan(pScan);
 
-		  if (m_pUseScanMatching->GetValue())
-		  {
+//		  if (m_pUseScanMatching->GetValue())
+//		  {
 			  // add to graph
 			  m_pGraph->AddVertex(pScan);
 			  m_pGraph->AddEdges(pScan, covariance);
@@ -2685,7 +2687,7 @@ namespace karto
 					  m_pGraph->TryCloseLoop(pScan, *iter);
 				  }
 			  }
-		  }
+//		  }
 
 		  m_pMapperSensorManager->SetLastScan(pScan);
 
@@ -2697,6 +2699,7 @@ namespace karto
 
   kt_bool Mapper::ProcessAgainstNodesNearBy(LocalizedRangeScan* pScan)
   {
+	  std::cout << "ProcessAgainstNodesNearBy" << std::endl;
     if (pScan != NULL)
     {
       karto::LaserRangeFinder* pLaserRangeFinder = pScan->GetLaserRangeFinder();
@@ -2774,6 +2777,7 @@ namespace karto
 
   kt_bool Mapper::ProcessLocalization(LocalizedRangeScan* pScan)
   {
+	  std::cout << "ProcessLocalization" << std::endl;
     if (pScan == NULL)
     {
       return false;
@@ -2882,6 +2886,7 @@ namespace karto
 
   kt_bool Mapper::RemoveNodeFromGraph(Vertex<LocalizedRangeScan>* vertex_to_remove)
   {
+	  std::cout << "RemoveNodeFromGraph" << std::endl;
     // 1) delete edges in adjacent vertices, graph, and optimizer
     std::vector<Vertex<LocalizedRangeScan>*> adjVerts =
       vertex_to_remove->GetAdjacentVertices();
@@ -2949,6 +2954,7 @@ namespace karto
   kt_bool Mapper::ProcessAgainstNode(LocalizedRangeScan* pScan, 
     const int& nodeId)
   {
+	  std::cout << "ProcessAgainstNode" << std::endl;
     if (pScan != NULL)
     {
       karto::LaserRangeFinder* pLaserRangeFinder = pScan->GetLaserRangeFinder();
