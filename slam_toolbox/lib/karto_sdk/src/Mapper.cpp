@@ -1467,10 +1467,19 @@ namespace karto
     // link to other near chains (chains that include new scan are invalid)
     LinkNearChains(pScan, means, covariances);
 
-    if (!means.empty())
-    {
-      pScan->SetSensorPose(ComputeWeightedMean(means, covariances));
-    }
+//    if (!means.empty()) removed since it incorrectly introduced an error in the sensor pose
+//    {
+//      auto previousPose = pScan->GetSensorPose();
+//      pScan->SetSensorPose(ComputeWeightedMean(means, covariances));
+//
+//	  auto diffX = previousPose.GetX() - pScan->GetSensorPose().GetX();
+//	  auto diffY = previousPose.GetY() - pScan->GetSensorPose().GetY();
+//	  auto diffTheta = previousPose.GetHeading() - pScan->GetSensorPose().GetHeading();
+//	  if (diffX > 0.0001 || diffY > 0.0001 || diffTheta > 0.01) {
+//		  std::cout << "pScan->SetSensorPose(ComputeWeightedMean(means, covariances)): "
+//					<< diffX << ", " << diffY << ", " << diffTheta << std::endl;
+//	  }
+//    }
   }
 
   kt_bool MapperGraph::TryCloseLoop(LocalizedRangeScan* pScan, const Name& rSensorName)
@@ -2665,12 +2674,15 @@ namespace karto
 					  bestPose,
 					  covariance);
 			  pScan->SetSensorPose(bestPose);
-		  } else
+		  }
+		  if (!m_pUseScanMatching->GetValue() && pLastScan != NULL)
 		  {
-			  // very small covariance (odometry is assumed to be completely reliable)
-			  covariance(0, 0) = 0.00009;  // XX
-			  covariance(1, 1) = 0.00009;  // YY
-			  covariance(2, 2) = 0.000002;  // TH*TH
+			  Pose2 bestPose;
+			  m_pSequentialScanMatcher->MatchScan(
+                      pScan,
+                      m_pMapperSensorManager->GetRunningScans(pScan->GetSensorName()),
+                      bestPose,
+                      covariance);
 		  }
 
 		  // add scan to buffer and assign id
