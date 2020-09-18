@@ -1,0 +1,5 @@
+.idea
+_CATKIN_IGNORE
+CATKIN_IGNORE
+**/.idea
+**/cmake-build-debug
